@@ -23,12 +23,6 @@ export default eventHandler(async (event) => {
     })
   }
 
-  // Store table update to Redis cache
-  const dataStorage = useStorage('table-updates')
-  const cached = [await dataStorage.getItem('test')].flat() || []
-  cached.push(`Inserted ${payload.test_string} at ${new Date().toISOString()}`)
-  await dataStorage.setItem('test', cached)
-
   // Fetch data from supabase
   const { data, error } = await supabase
     .from('test')
@@ -43,6 +37,12 @@ export default eventHandler(async (event) => {
       statusText: 'Internal Server Error'
     })
   }
+
+  // Store table update to Redis cache
+  const dataStorage = useStorage('table-updates')
+  const cached = [await dataStorage.getItem('test')].flat() || []
+  cached.push(`Inserted row ${data[0].id} with ${payload.test_string} at ${new Date().toISOString()}`)
+  await dataStorage.setItem('test', cached)
 
   // return inserted data as response
   return { statusCode: 200, statusMessage: `Row ${data[0].id} insert successful.`, data: data[0] }
