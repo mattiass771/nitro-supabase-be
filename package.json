@@ -12,5 +12,8 @@
     "@supabase/supabase-js": "2.33.1",
     "nitropack": "latest",
     "zod": "3.22.2"
+  },
+  "devDependencies": {
+    "@vercel/kv": "0.2.2"
   }
 }

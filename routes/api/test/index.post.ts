@@ -23,6 +23,10 @@ export default eventHandler(async (event) => {
     })
   }
 
+  // Store table update to Redis cache
+  const dataStorage = useStorage('table-updates')
+  await dataStorage.setItem('test', `Inserted ${payload.test_string} at ${new Date().toISOString()}`)
+
   // Fetch data from supabase
   const { data, error } = await supabase
     .from('test')
