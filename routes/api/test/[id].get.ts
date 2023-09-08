@@ -1,10 +1,13 @@
-import supabase from '../../db'
+import supabase from '../../../db'
 
-export default eventHandler(async () => {
+export default eventHandler(async (event) => {
+  // get ID
+  const { id } = event.context.params
   // Fetch data from supabase
   const { data, error } = await supabase
     .from('test')
     .select()
+    .eq('id', id)
 
   if (error) {
     // error handling
@@ -16,5 +19,5 @@ export default eventHandler(async () => {
   }
 
   // return data as response
-  return data
+  return data[0]
 })

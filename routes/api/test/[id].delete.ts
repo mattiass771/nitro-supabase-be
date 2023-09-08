@@ -1,4 +1,4 @@
-import supabase from '../../db'
+import supabase from '../../../db'
 
 export default eventHandler(async (event) => {
   // get ID

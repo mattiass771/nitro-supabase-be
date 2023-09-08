@@ -1,15 +1,15 @@
 import { z } from 'zod'
-import supabase from '../../db'
-import { Database } from '../../types/database'
+import supabase from '../../../db'
+import { Database } from '../../../types/database'
 
 const PayloadValidationSchema = z.object({
   test_string: z.string().nullable()
 })
 
 export default eventHandler(async (event) => {
-  // get ID
-  const { id } = event.context.params
-  const payload = await readBody(event) as Database['public']['Tables']['test']['Update']
+  const payload = await readBody(
+    event
+  ) as Database['public']['Tables']['test']['Insert']
 
   // Payload validation
   const payloadValidation = PayloadValidationSchema.safeParse(payload)
@@ -26,8 +26,7 @@ export default eventHandler(async (event) => {
   // Fetch data from supabase
   const { data, error } = await supabase
     .from('test')
-    .update(payload)
-    .eq('id', id)
+    .insert(payload)
     .select()
 
   if (error) {
@@ -39,6 +38,6 @@ export default eventHandler(async (event) => {
     })
   }
 
-  // return updated data as response
-  return { statusCode: 200, statusMessage: `Row ${id} update successful.`, data: data[0] }
+  // return inserted data as response
+  return { statusCode: 200, statusMessage: `Row ${data[0].id} insert successful.`, data: data[0] }
 })
